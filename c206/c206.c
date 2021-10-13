@@ -314,7 +314,7 @@ void DLL_DeleteAfter( DLList *list ) {
         else{
             temp->nextElement->previousElement = list->activeElement;
         }
-        free(temp);
+        free(temp); 
     }
 }
 
