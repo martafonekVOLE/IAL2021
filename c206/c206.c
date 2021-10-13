@@ -224,8 +224,8 @@ void DLL_GetFirst( DLList *list, int *dataPtr ) {
  */
 void DLL_GetLast( DLList *list, int *dataPtr ) {
                                     //Pokud neni seznam prazdny, vrati pomoci ukazatele hodnotu posledniho prvku
-    if(list->lastElement != NULL){
-        *dataPtr= list->lastElement->data;
+    if(list->firstElement != NULL){
+        *dataPtr = list->lastElement->data; //Errno - test 37
     }
     else{
         DLL_Error();
@@ -270,23 +270,25 @@ void DLL_DeleteFirst( DLList *list ) {
  */
 void DLL_DeleteLast( DLList *list ) {
 
-    if(list==NULL||list->lastElement==NULL){
-
+    if(list==NULL || list->firstElement==NULL){
+            
     }
     else{
-        DLLElementPtr temp = list->lastElement->previousElement;
         if(list->lastElement == list->activeElement){       //Overeni, zdali je aktivni element zaroven poslednim
             list->activeElement = NULL;
         }
-        if(temp == NULL){
-            free(list->lastElement);    //Pokud existuje predposledni element, uvolni posledni a puvodne predposledny element prirad jako posledni v seznamu
-            list->lastElement = temp;
+        DLLElementPtr temp = list->lastElement;
+        if(list->lastElement != list->firstElement){
+            list->lastElement = list->lastElement->previousElement;
+            list->lastElement->nextElement = NULL;
         }
         else{
-            temp->nextElement = NULL;
-            free(list->lastElement);
-            list->lastElement = temp;
+            list->firstElement = NULL;
+            list->lastElement = NULL;
+            list->activeElement = NULL;
         }
+        free(temp);
+        
     }
 }
 
@@ -299,13 +301,20 @@ void DLL_DeleteLast( DLList *list ) {
  */
 void DLL_DeleteAfter( DLList *list ) {
 
-    if(list->lastElement == list->activeElement || list == NULL || list->activeElement == NULL){
+    if(list->firstElement == list->activeElement || list == NULL || list->activeElement == NULL || list->activeElement->nextElement == NULL){
 
     }
     else{       
-        DLLElementPtr temp = list->activeElement->nextElement->nextElement; //Pokud se nesplni predchozi podminky, uvolni element po aktivnim ??//Stane se posledním když temp = 0??
-        free(list->activeElement->nextElement);
-        list->activeElement->nextElement = temp;
+        DLLElementPtr temp = list->activeElement->nextElement; //Pokud se nesplni predchozi podminky, uvolni element po aktivnim ??//Stane se posledním když temp = 0??
+        
+        list->activeElement->nextElement = temp->nextElement;
+        if(temp->nextElement == NULL){
+            list->lastElement = list->activeElement;
+        }
+        else{
+            temp->nextElement->previousElement = list->activeElement;
+        }
+        free(temp);
     }
 }
 
