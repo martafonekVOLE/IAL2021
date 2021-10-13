@@ -359,7 +359,7 @@ void DLL_InsertAfter( DLList *list, int data ) {
 
     }
     else{
-        DLLElementPtr temp = list->activeElement->nextElement;
+        DLLElementPtr temp = list->activeElement;
         DLLElementPtr newInput = malloc(sizeof(struct DLLElement));
 
         if(newInput == NULL){
@@ -368,11 +368,16 @@ void DLL_InsertAfter( DLList *list, int data ) {
         else{                       //Pokud se zdari alokace, vloz na misto noveho prvku (za aktivni prvek) dana data
             newInput->data = data;
             newInput->previousElement = list->activeElement;
-            newInput->nextElement = temp;
-            list->activeElement->nextElement = newInput;
-            if(temp != NULL){
-                temp->previousElement = newInput;
+            
+            if(temp->nextElement != NULL){
+                temp->nextElement->previousElement = newInput;
+                newInput->nextElement = list->activeElement->nextElement;
             }
+            else{
+                list->lastElement = newInput;
+                newInput->nextElement = NULL;
+            }
+            list->activeElement->nextElement = newInput;
         }
     }
 }
@@ -390,9 +395,9 @@ void DLL_InsertBefore( DLList *list, int data ) {
 
     if(list == NULL || list->activeElement == NULL){
 
-    }
+    }   
     else{
-        DLLElementPtr temp = list->activeElement->previousElement;
+        DLLElementPtr temp = list->activeElement;
         DLLElementPtr newInput = malloc(sizeof(struct DLLElement));
 
         if(newInput == NULL){
@@ -400,12 +405,18 @@ void DLL_InsertBefore( DLList *list, int data ) {
         }
         else{                       //Pokud se zdari alokace, vloz na misto noveho prvku (pred aktivni prvek) dana data //Check ze je seznam propojeny (nechybi ukazatele)
             newInput->data = data;
-            newInput->previousElement = temp;
             newInput->nextElement = list->activeElement;
-            list->activeElement->previousElement = newInput;
-            if(temp != NULL){
-                temp->nextElement = newInput;
+            if(temp->previousElement != NULL){
+                list->activeElement->previousElement->nextElement = list->activeElement;
+                //temp->previousElement = newInput;   //Error here
+                newInput->previousElement = list->activeElement->previousElement;
             }
+            else{
+                list->firstElement = newInput;
+                newInput->previousElement = NULL;
+            }
+            list->activeElement->previousElement = newInput; //Error -> position of this line
+
         }
     }
 }
