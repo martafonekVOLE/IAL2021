@@ -120,8 +120,8 @@ void DLL_Dispose( DLList *list ) {
  */
 void DLL_InsertFirst( DLList *list, int data ) {
 
-    DLLElementPtr temp = (DLLElementPtr) malloc(sizeof(struct DLLElement));
-    DLLElementPtr firstInList = list->firstElement; //*
+    DLLElementPtr temp = malloc(sizeof(struct DLLElement));
+    DLLElementPtr firstInList = list->firstElement; 
 
     if(temp == NULL){       //Zkouska, ze se alokovalo pozadovane misto
         DLL_Error();
@@ -153,8 +153,8 @@ void DLL_InsertFirst( DLList *list, int data ) {
  */
 void DLL_InsertLast( DLList *list, int data ) {
 
-    DLLElementPtr temp = (DLLElementPtr) malloc(sizeof(struct DLLElement));
-    DLLElementPtr lastInList = list->lastElement; //*
+    DLLElementPtr temp = malloc(sizeof(struct DLLElement));
+    DLLElementPtr lastInList = list->lastElement; 
 
     if(temp == NULL){       //Podobny postup - kontrola alokace, nasledne nahrani obsahu na posledni pozici v seznamu
         DLL_Error();
@@ -225,7 +225,7 @@ void DLL_GetFirst( DLList *list, int *dataPtr ) {
 void DLL_GetLast( DLList *list, int *dataPtr ) {
                                     //Pokud neni seznam prazdny, vrati pomoci ukazatele hodnotu posledniho prvku
     if(list->firstElement != NULL){
-        *dataPtr = list->lastElement->data; //Errno - test 37
+        *dataPtr = list->lastElement->data; //Errno - test 37 - solved 
     }
     else{
         DLL_Error();
@@ -282,7 +282,7 @@ void DLL_DeleteLast( DLList *list ) {
             list->lastElement = list->lastElement->previousElement;
             list->lastElement->nextElement = NULL;
         }
-        else{
+        else{                                               //Pokud existuje jen jeden prvek seznamu, smaž jej a všechny ukazatele nastav na NULL
             list->firstElement = NULL;
             list->lastElement = NULL;
             list->activeElement = NULL;
@@ -305,7 +305,7 @@ void DLL_DeleteAfter( DLList *list ) {
 
     }
     else{       
-        DLLElementPtr temp = list->activeElement->nextElement; //Pokud se nesplni predchozi podminky, uvolni element po aktivnim ??//Stane se posledním když temp = 0??
+        DLLElementPtr temp = list->activeElement->nextElement; //Pokud se nesplni predchozi podminky, uvolni element po aktivnim 
         
         list->activeElement->nextElement = temp->nextElement;
         if(temp->nextElement == NULL){
@@ -327,14 +327,14 @@ void DLL_DeleteAfter( DLList *list ) {
  */
 void DLL_DeleteBefore( DLList *list ) {
 
-    if(list->firstElement == list->activeElement || list == NULL || list->activeElement == NULL){
+    if(list->firstElement == list->activeElement || list == NULL || list->activeElement == NULL || list->activeElement->previousElement == NULL){
 
     }
     else{
         DLLElementPtr temp = list->activeElement->previousElement;
         
         list->activeElement->previousElement = temp->previousElement;
-        if(temp->previousElement == NULL){             //Pokud existuje prvek pred cilenym prvkem, tak ho prirad na pozici a nasledne smaz
+        if(temp->previousElement == NULL){             //Pokud existuje prvek pred cilenym prvkem, tak ho prirad na pozici a nasledne smaz cilovy prvek
             list->firstElement = list->activeElement;
         }
         else{
@@ -415,7 +415,7 @@ void DLL_InsertBefore( DLList *list, int data ) {
                 list->firstElement = newInput;
                 newInput->previousElement = NULL;
             }
-            list->activeElement->previousElement = newInput; //Error -> position of this line
+            list->activeElement->previousElement = newInput; //Error -> position of this line - solved
 
         }
     }

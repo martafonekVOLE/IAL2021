@@ -56,20 +56,21 @@ int solved;
  */
 void untilLeftPar( Stack *stack, char *postfixExpression, unsigned *postfixExpressionLength ) {
     if(Stack_IsEmpty(stack)){
-
+        //break;
     }
+
     else{
         char stackTop;
         while(!Stack_IsEmpty(stack)){
             Stack_Top(stack, &stackTop);
 
-            if(stackTop == '('){
+            if(stackTop == '('){        //Čekání na levou závorku, odstraňování zbytku
                 Stack_Pop(stack);
                 break;
             }
 
             Stack_Pop(stack);
-            postfixExpression[(*postfixExpressionLength)++] = stackTop;
+            postfixExpression[(*postfixExpressionLength)++] = stackTop;  //Dereferencování ukazatele a zapsání výrazu stackTop dole pole s indexem o jedno vyšší, nežli je hodnota pointeru
 
             
         }
@@ -167,19 +168,19 @@ char *infix2postfix( const char *infixExpression ) {
     int i = 0;
     unsigned postfixExpressionLength = 0;
 
-    Stack *stack = malloc(sizeof(Stack));
+    Stack *stack = malloc(sizeof(Stack));   //Alokace místa pro vytvoření zásobníku
     if(stack == NULL){
         return NULL;
     }
-    Stack_Init(stack);
+    Stack_Init(stack);                      //Inicializace zásobníku
 
-    char *postfixExpression = malloc(MAX_LEN * sizeof(char));
+    char *postfixExpression = malloc(MAX_LEN * sizeof(char)); //Alokace paměti pro výstupní řetězec
     if(postfixExpression == NULL){
-        free(stack);
+        free(stack);        //Pokud dojde k chybě alokace, uvolním i zásobník, protože stejně dojde k chybě
         return NULL;
     }
 
-    while(infixExpression[i] != '\0'){
+    while(infixExpression[i] != '\0'){          //Dokud vstupní výraz není EOF, procházím a zapisuji do postfixové reprezentace
         char temp = infixExpression[i];
         if((temp >= '0' && temp <= '9') || (temp >= 'a' && temp <= 'z') || (temp >= 'A' && temp <= 'Z'))
             postfixExpression[postfixExpressionLength++] = temp;
