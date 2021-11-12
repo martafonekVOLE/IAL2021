@@ -68,7 +68,7 @@ TEST(test_tree_search, "Search for an item deeper in the tree (A)")
 bst_init(&test_tree);
 bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
 int result;
-bst_search(test_tree, 'A', &result);
+bst_search(test_tree, 'C', &result);
 bst_print_tree(test_tree);
 ENDTEST
 
@@ -76,14 +76,15 @@ TEST(test_tree_search_missing, "Search for a missing key (X)")
 bst_init(&test_tree);
 bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
 int result;
-bst_search(test_tree, 'X', &result);
+if(bst_search(test_tree, 'X', &result) == false){
+  printf("Node not found.");
+}
 bst_print_tree(test_tree);
 ENDTEST
 
 TEST(test_tree_delete_leaf, "Delete a leaf node (A)")
 bst_init(&test_tree);
 bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
-bst_print_tree(test_tree);
 bst_delete(&test_tree, 'A');
 bst_print_tree(test_tree);
 ENDTEST

@@ -18,15 +18,7 @@
  * možné toto detegovať vo funkcii.
  */
 void bst_init(bst_node_t **tree) {
-  if (*tree == NULL){
-    return;
-  }
-  
-  (*tree)->key = 0;
-  (*tree)->value = 0;
-  (*tree)->left = NULL;
-  (*tree)->right = NULL;
-
+  *tree = NULL;
   return;
 }
 
@@ -43,18 +35,23 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
   if(tree == NULL){
     return false;
   }
-  if(key < tree->key){
-    return bst_search(tree->left, key, value);
-  }
-  else if(key > tree->key){
-    return bst_search(tree->right, key, value);
-  }
   else{
-    *value = tree->value;
-    return true;
+    if(tree->key == key){
+      *value = tree->value;
+      printf("Vypis nalezene hodnoty: %d\n", *value);
+      return true;
+    }
+    else if(tree->key > key){
+      return bst_search(tree->left, key, value);
+    }
+    else if(tree->key < key){
+      printf("Vnoreni do uzlu!");
+      printf("\nHledany klic: %c\n", key);
+      return bst_search(tree->right, key, value);
+    }
   }
   return false;
-}
+} 
 
 /*
  * Vloženie uzlu do stromu.
@@ -105,14 +102,22 @@ void bst_insert(bst_node_t **tree, char key, int value) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
+  if(*tree == NULL || target == NULL){
+    return;
+  }
+
   if((*tree)->right == NULL){
-    bst_node_t temp = **tree;
+    bst_node_t *temp = *tree;
     target->key = (*tree)->key;
     target->value = (*tree)->value;
     
     *tree = temp->left;
     free(temp);
   }
+  else{
+    bst_replace_by_rightmost(target, &(*tree)->right);
+  }
+  return;
 }
 
 /*
@@ -128,6 +133,36 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * použitia vlastných pomocných funkcií.
  */
 void bst_delete(bst_node_t **tree, char key) {
+  if(*tree == NULL){
+    return;
+  }
+  if(key < (*tree)->key){
+    bst_delete(&(*tree)->left, key);
+  }
+  else if(key > (*tree)->key){
+    bst_delete(&(*tree)->right, key);
+  }
+  else{
+    bst_node_t *temp;
+    if((*tree)->left == NULL && (*tree)->right == NULL){    //Jediný prvek ve stromě
+      free(*tree);
+      (*tree) = NULL;
+    }
+    else if((*tree)->left == NULL && (*tree)->right != NULL){
+      temp = (*tree);    //Dědění
+      (*tree) = (*tree)->right;
+      free(temp);
+    }
+    else if((*tree)->right == NULL && (*tree)->left != NULL){
+      temp = (*tree);
+      (*tree) = (*tree)->left;
+      free(temp);
+    }
+    else if((*tree)->right != NULL && (*tree)->left != NULL){
+      bst_replace_by_rightmost((*tree), &(*tree)->left);
+    }
+  }
+  return;
 }
 
 /*
@@ -140,6 +175,21 @@ void bst_delete(bst_node_t **tree, char key) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_dispose(bst_node_t **tree) {
+  if((*tree) == NULL){
+    return;
+  }
+
+    if((*tree)->left != NULL){
+      bst_dispose(&(*tree)->left);
+    }
+    if((*tree)->right != NULL){
+      bst_dispose(&(*tree)->right);
+    }
+
+    free(*tree);
+    (*tree) = NULL;
+
+  return;
 }
 
 /*
@@ -150,6 +200,7 @@ void bst_dispose(bst_node_t **tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_preorder(bst_node_t *tree) {
+
 }
 
 /*
@@ -160,6 +211,27 @@ void bst_preorder(bst_node_t *tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_inorder(bst_node_t *tree) {
+  if(tree == NULL){
+    printf("\nret");
+    return;
+  }
+
+  if(tree->left != NULL){
+    printf("\nleft");
+    bst_inorder(tree->left);  
+  }
+  else if(tree->left == NULL){
+    printf("\nroot");
+    bst_print_node(tree);
+    bst_inorder(tree->left);
+    
+  }
+  else if(tree->right == NULL){
+    printf("\nright");
+    bst_print_node(tree);
+    bst_inorder(tree);
+    
+  }
 }
 /*
  * Postorder prechod stromom.
@@ -169,4 +241,14 @@ void bst_inorder(bst_node_t *tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_postorder(bst_node_t *tree) {
+  if(tree == NULL){
+    return;
+  }
+
+  if(tree->left != NULL){
+    bst_postorder(tree->left);
+  }
+  else if(tree->parent == NULL){
+    bst_print_node(tree);
+  }
 }
