@@ -20,6 +20,11 @@
  * možné toto detegovať vo funkcii.
  */
 void bst_init(bst_node_t **tree) {
+  if(tree == NULL){
+    return;
+  }
+  *tree = NULL;
+  return;
 }
 
 /*
@@ -32,6 +37,59 @@ void bst_init(bst_node_t **tree) {
  * Funkciu implementujte iteratívne bez použitia vlastných pomocných funkcií.
  */
 bool bst_search(bst_node_t *tree, char key, int *value) {
+  if(tree == NULL){
+    return false;
+  }
+  else{
+    if(tree->key == key){
+      *value = tree->value;
+      return true;
+    }
+
+    else if(tree->key > key){
+      bst_node_t *temp = tree;
+      while(temp != NULL){
+        if(temp->key == key){
+          return true;
+        }
+        else if(temp->key < key){
+          while(temp != NULL){
+            if(temp->key == key){
+              return true;
+            }
+            else{
+              temp = temp->right;
+            }
+          }
+        }
+        else{
+          temp = temp->left;
+        }
+      }
+    }
+
+    else{
+      bst_node_t *temp = tree;
+      while(temp != NULL){
+        if(temp->key == key){
+          return true;
+        }
+        else if(temp->key > key){
+          while(temp != NULL){
+            if(temp->key == key){
+              return true;
+            }
+            else{
+              temp = temp->left;
+            }
+          }
+        }
+        else{
+          temp = temp->right;
+        }
+      }
+    }
+  }
   return false;
 }
 
@@ -47,6 +105,78 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Funkciu implementujte iteratívne bez použitia vlastných pomocných funkcií.
  */
 void bst_insert(bst_node_t **tree, char key, int value) {
+  bst_node_t *temp = *tree;
+
+  if(temp == NULL){
+    bst_node_t *new = malloc(sizeof(bst_node_t));
+
+    if(new == NULL){          //Chyba alokace
+      return;
+    }
+
+    new->value = value;
+    new->key = key;
+    new->left = NULL;
+    new->right = NULL;
+    (*tree) = new;
+  }
+  else{
+    while(temp != NULL){
+
+      if(key == temp->key){     //Nalezení jíž existujícího prvku a přepsání hodnoty
+        temp->value = value;
+        temp->key = key;
+        return;
+      }
+      
+      if(key < temp->key){      //Hledaná položka je v levé části podstromu
+        if(temp->left == NULL){
+          bst_node_t *new = malloc(sizeof(bst_node_t));
+
+          if(new == NULL){    //Chyba alokace
+            return;
+          }
+
+          new->value = value;
+          new->key = key;
+          new->left = NULL;
+          new->right = NULL;
+          temp->left = new;
+
+          return;
+        }
+        else{
+          temp = temp->left;
+          continue;
+        }
+      }
+
+      else if(key > temp->key){ //Hledaná položka je v pravé části podstromu
+        if(temp->right == NULL){
+        bst_node_t *new = malloc(sizeof(bst_node_t));
+
+        if(new == NULL){      //Chyba alokace
+            return;
+        }
+
+        new->value = value;
+        new->key = key;
+        new->left = NULL;
+        new->right = NULL;
+        temp->right = new;
+
+        return; 
+        }
+        else{
+          temp = temp->right;
+          continue;
+        }
+      }
+    }
+  }
+
+
+  return;
 }
 
 /*
@@ -63,6 +193,30 @@ void bst_insert(bst_node_t **tree, char key, int value) {
  * Funkciu implementujte iteratívne bez použitia vlastných pomocných funkcií.
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
+  if(*tree == NULL || target == NULL){
+    return;
+  }
+
+  if((*tree)->right == NULL){
+    bst_node_t *temp = *tree;
+    target->key = (*tree)->key;
+    target->value = (*tree)->value;
+    
+    *tree = temp->left;
+    free(temp);
+  }
+  else{
+    bst_node_t *temp = *tree;
+    while(temp->right != NULL){
+      printf("xDoA3C");
+      temp = temp->right;
+    }
+    target->key = temp->key;
+    target->value = temp->value;
+    *tree = temp->left;
+    free(temp->right);
+  }
+
 }
 
 /*
@@ -78,6 +232,45 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * použitia vlastných pomocných funkcií.
  */
 void bst_delete(bst_node_t **tree, char key) {
+  if(*tree == NULL){
+    return;
+  }
+
+  bst_node_t *temp = (*tree);
+
+  while(key != temp->key && temp != NULL){
+    if(key < temp->key){
+      if(temp->left == NULL || temp->key == key){
+        break;
+      }
+      temp = temp->left;
+    }
+    if(key > temp->key){
+      if(temp->right == NULL || temp->key == key){
+        break;
+      }
+      temp = temp->right;
+    }
+    if (key == temp->key){
+      break;
+    }
+  }
+  if(key == temp->key){
+
+    if((temp->left == NULL) && (temp->right == NULL)){
+      free(temp);
+      temp = NULL;
+    }
+  
+    else if(temp->right != NULL && temp->left != NULL){
+      bst_replace_by_rightmost(temp, &temp->left);
+    }
+    else{
+      return;
+    }
+    
+  }
+  return;
 }
 
 /*
@@ -91,6 +284,11 @@ void bst_delete(bst_node_t **tree, char key) {
  * vlastných pomocných funkcií.
  */
 void bst_dispose(bst_node_t **tree) {
+  if((*tree) == NULL){
+    return;
+  }
+  bst 
+
 }
 
 /*

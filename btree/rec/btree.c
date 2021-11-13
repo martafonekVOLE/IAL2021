@@ -18,6 +18,9 @@
  * možné toto detegovať vo funkcii.
  */
 void bst_init(bst_node_t **tree) {
+  if(tree == NULL){
+    return;
+  }
   *tree = NULL;
   return;
 }
@@ -145,7 +148,7 @@ void bst_delete(bst_node_t **tree, char key) {
   else{
     bst_node_t *temp;
     if((*tree)->left == NULL && (*tree)->right == NULL){    //Jediný prvek ve stromě
-      free(*tree);
+      free(*tree);                                          //?!
       (*tree) = NULL;
     }
     else if((*tree)->left == NULL && (*tree)->right != NULL){
@@ -200,7 +203,12 @@ void bst_dispose(bst_node_t **tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_preorder(bst_node_t *tree) {
-
+  if(tree == NULL){
+    return;
+  }
+  bst_print_node(tree);
+  bst_print_node(tree->left);
+  bst_print_node(tree->right);
 }
 
 /*
@@ -212,26 +220,13 @@ void bst_preorder(bst_node_t *tree) {
  */
 void bst_inorder(bst_node_t *tree) {
   if(tree == NULL){
-    printf("\nret");
     return;
   }
+  if(tree->left != NULL){}
 
-  if(tree->left != NULL){
-    printf("\nleft");
-    bst_inorder(tree->left);  
-  }
-  else if(tree->left == NULL){
-    printf("\nroot");
-    bst_print_node(tree);
-    bst_inorder(tree->left);
-    
-  }
-  else if(tree->right == NULL){
-    printf("\nright");
-    bst_print_node(tree);
-    bst_inorder(tree);
-    
-  }
+  bst_print_node(tree->left);
+  bst_print_node(tree);
+  bst_print_node(tree->right);
 }
 /*
  * Postorder prechod stromom.
@@ -245,10 +240,7 @@ void bst_postorder(bst_node_t *tree) {
     return;
   }
 
-  if(tree->left != NULL){
-    bst_postorder(tree->left);
-  }
-  else if(tree->parent == NULL){
-    bst_print_node(tree);
-  }
+  bst_print_node(tree->left);
+  bst_print_node(tree->right);
+  bst_print_node(tree);
 }
