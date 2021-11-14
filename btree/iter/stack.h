@@ -33,7 +33,7 @@
   T stack_##TNAME##_top(stack_##TNAME##_t *stack);                             \
   bool stack_##TNAME##_empty(stack_##TNAME##_t *stack);
 
-STACKDEC(bst_node_t *, bst)
+STACKDEC(bst_node_t *, bst) //ukazatele na pointery
 STACKDEC(bool, bool)
 
 #endif

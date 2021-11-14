@@ -206,9 +206,11 @@ void bst_preorder(bst_node_t *tree) {
   if(tree == NULL){
     return;
   }
+  if(tree != NULL){
   bst_print_node(tree);
-  bst_print_node(tree->left);
-  bst_print_node(tree->right);
+  bst_preorder(tree->left);
+  bst_preorder(tree->right);
+  }
 }
 
 /*
@@ -222,11 +224,11 @@ void bst_inorder(bst_node_t *tree) {
   if(tree == NULL){
     return;
   }
-  if(tree->left != NULL){}
-
-  bst_print_node(tree->left);
+  if(tree != NULL){
+  bst_inorder(tree->left);
   bst_print_node(tree);
-  bst_print_node(tree->right);
+  bst_inorder(tree->right);
+  }
 }
 /*
  * Postorder prechod stromom.
@@ -240,7 +242,7 @@ void bst_postorder(bst_node_t *tree) {
     return;
   }
 
-  bst_print_node(tree->left);
-  bst_print_node(tree->right);
+  bst_postorder(tree->left);
+  bst_postorder(tree->right);
   bst_print_node(tree);
 }
