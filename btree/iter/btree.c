@@ -42,11 +42,11 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
   }
 
   bst_node_t *temp = tree;
-  while(temp != NULL){
-    if(tree->key == key){
+  while(temp != NULL){        //prohledávací algoritmus bst
+    if(tree->key == key){     //prvek nalezen
       return true;
     }
-    else{
+    else{                     //hledání prvku
       if(key < tree->key){
         tree = tree->left;
       }
@@ -75,14 +75,14 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
 void bst_insert(bst_node_t **tree, char key, int value) {
   bst_node_t *temp = *tree;
 
-  if(temp == NULL){
+  if(temp == NULL){           //Vložení prvního prvku do bst
     bst_node_t *new = malloc(sizeof(bst_node_t));
 
-    if(new == NULL){          //Chyba alokace
+    if(new == NULL){          //Ověření chybné alokace
       return;
     }
 
-    new->value = value;
+    new->value = value;       //hodnota a klíč prvku
     new->key = key;
     new->left = NULL;
     new->right = NULL;
@@ -105,7 +105,7 @@ void bst_insert(bst_node_t **tree, char key, int value) {
             return;
           }
 
-          new->value = value;
+          new->value = value; //Vkládání hodnoty
           new->key = key;
           new->left = NULL;
           new->right = NULL;
@@ -127,7 +127,7 @@ void bst_insert(bst_node_t **tree, char key, int value) {
             return;
         }
 
-        new->value = value;
+        new->value = value;   //vkládání hodnoty
         new->key = key;
         new->left = NULL;
         new->right = NULL;
@@ -165,7 +165,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
     return;
   }
 
-  if((*tree)->right == NULL){
+  if((*tree)->right == NULL){   //Nalezení nejpravějšího prvku
     bst_node_t *temp = *tree;
     target->key = (*tree)->key;
     target->value = (*tree)->value;
@@ -173,7 +173,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
     *tree = temp->left;
     free(temp);
   }
-  else{
+  else{                       //Hledání nejpravějšího prvku
     bst_node_t *temp = *tree;
     while(temp->right != NULL){
       temp = temp->right;
@@ -198,8 +198,8 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * Funkciu implementujte iteratívne pomocou bst_replace_by_rightmost a bez
  * použitia vlastných pomocných funkcií.
  */
-void bst_delete(bst_node_t **tree, char key) {
-  if(*tree == NULL){
+void bst_delete(bst_node_t **tree, char key) {    //Aktuálně vypisuje jen napojovaný podstrom - mohlo by způsobit segfault
+  /*if(*tree == NULL){
     return;
   }
 
@@ -242,7 +242,7 @@ void bst_delete(bst_node_t **tree, char key) {
       return;
     }
   }
-  }
+  }*/
   return;
 }
 
@@ -257,20 +257,36 @@ void bst_delete(bst_node_t **tree, char key) {
  * vlastných pomocných funkcií.
  */
 void bst_dispose(bst_node_t **tree) {
-  if((*tree) == NULL){
+	if (*tree == NULL){
     return;
   }
 
-  //TAKTOO??
-  STACKDEC(bst_node_t*, ptrStack);
-  void stack_ptrStack_init(stack_ptrStack_t *ptrStack);
+	stack_bst_t* stack = malloc(sizeof(stack_bst_t));     //vytvoření zásobníku
+	if (stack == NULL){
+    return;
+  }
+	stack_bst_init(stack);    //inicializace
 
-  stack_ptrStack_t temp = tree; //NNEJDE
-  //
+	bst_node_t *temp = *tree;
 
-  
+	while (temp != NULL || !stack_bst_empty(stack)) {   //dokud není zásobník prázdný nebo nejsme nakonci stromu loopuj
+		if (temp == NULL){
+      temp = stack_bst_pop(stack);
+    }
 
-  
+		if (temp->right != NULL){
+      stack_bst_push(stack, temp->right);
+    }
+
+		bst_node_t *tempF = temp;
+		temp = temp->left;
+		free(tempF);
+	}
+
+	*tree = NULL;
+	free(stack);
+
+	return;
 
 }
 
@@ -288,8 +304,8 @@ void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit) {
     return;
   }
   while(tree != NULL){
+    stack_bst_push(to_visit, tree);
     bst_print_node(tree);
-    //push na stack
     tree = tree->left;
   }
   return;
@@ -307,17 +323,22 @@ void bst_preorder(bst_node_t *tree) {
   if(tree == NULL){
     return;
   }
-  //zásobník = malloc(sizeof(zásobník));
-  //if(zasobnik == NULL) return;
-  //stack_init (zasobnik);
-  
-  bst_leftmost_preorder(tree, //zasobnik);
 
-  while(//!zasobnik_empty(zasobnik)){
-    tree = //stack_pop_top(zasobnik);
-    bst_leftmost_preorder(tree->right, //zasobnik);
+  stack_bst_t* stack = malloc(sizeof(stack_bst_t));   //práce se zásobníkem (jako u předchozí funkce)
+  if(stack == NULL){
+    return;
   }
-  free(//stack);
+  stack_bst_init(stack);
+
+  bst_leftmost_preorder(tree, stack);
+
+  while(!stack_bst_empty(stack)){                     //loopování zásobníkem (jako u předchozí funkce)
+    tree = stack_bst_top(stack);
+    tree = stack_bst_pop(stack);
+    bst_leftmost_preorder(tree->right, stack);
+  }
+
+  free(stack);
   return;
 }
 
@@ -336,7 +357,7 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit) {
   }
 
   while(tree != NULL){
-    //stack_push(//zasobnik, tree);
+    stack_bst_push(to_visit, tree);
     tree = tree->left;
   }
   return;
@@ -354,21 +375,23 @@ void bst_inorder(bst_node_t *tree) {
   if(tree == NULL){
     return;
   }
-  //zasobnik = malloc(sizeof(stack));
-  if(//zasobnik == NULL){
+  
+  stack_bst_t* stack = malloc(sizeof(stack_bst_t));     //(tvorba, init - jako u předchozího orderu)
+  if(stack == NULL){
     return;
   }
-  //zasobnik_init(stack);
+  stack_bst_init(stack);
 
-  bst_leftmost_inorder(tree, //zasobnik);
+  bst_leftmost_inorder(tree, stack);
 
-  while(!//stack_notEmpty){
-    tree = //stack_pop_top(stack);
+  while(!stack_bst_empty(stack)){                     //same loopování, jiné pořadí
+    tree = stack_bst_top(stack);
+    tree = stack_bst_pop(stack);
     bst_print_node(tree);
-    bst_leftmost_inorder(tree->right, //stack);
+    bst_leftmost_inorder(tree->right, stack);
   }
 
-  free(//stack);
+  free(stack);
   return;
 }
 
@@ -387,8 +410,8 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit, stack_bool_
     return;
   }
   while(tree != NULL){
-    //stack_push(//stack, tree);
-    //stack_push(//stack, true);
+    stack_bst_push(to_visit, tree);
+    stack_bool_push(first_visit, true);
     tree = tree->left;
   }
   return;
@@ -404,33 +427,35 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit, stack_bool_
  */
 void bst_postorder(bst_node_t *tree) {
   if(tree == NULL){
-
-  }
-  //stack = malloc(sizeof(stack));
-  //stack2 = malloc(sizeof(stack));
-  if(//stack == NULL || stack2 == NULL){
     return;
   }
-  //stack_init;
-  //stack2_init;
 
-  bst_leftmost_postorder(tree, stack, stack2);
   bool isLeft;
+  stack_bst_t* stack = malloc(sizeof(stack_bst_t));         //tvorba dvou zásobníku - jeden klasicky jako prve, druhý bool
+  stack_bool_t* boolStack = malloc(sizeof(stack_bool_t));   // bool použijeme pro získání přehledu kde v zásobníku se pohybujeme
+  if(stack == NULL || boolStack == NULL){
+    return;
+  }
+  stack_bst_init(stack);
+  stack_bool_init(boolStack);
 
-  while(!//stackEmpty(stack)){
-    tree = //stack_popTop;
-    isLeft = //stack2_popTop;
+  bst_leftmost_postorder(tree, stack, boolStack);
+
+  while(!stack_bst_empty(stack)){
+    tree = stack_bst_top(stack);
+    isLeft = stack_bool_top(boolStack);
+    stack_bool_pop(boolStack);
 
     if(isLeft){
-      //stack_push(stack, tree);
-      //stack2_push(stack, false);
-      bst_leftmost_postorder(tree->right, //stack, //stack2);
+      stack_bool_push(boolStack, false);
+      bst_leftmost_postorder(tree->right, stack, boolStack);
     }
     else{
+      stack_bst_pop(stack);
       bst_print_node(tree);
     }
   }
-  free(//stack);
-  free(//stack2);
+  free(stack);
+  free(boolStack);
   return;
 }

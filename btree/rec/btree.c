@@ -133,10 +133,10 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * použitia vlastných pomocných funkcií.
  */
 void bst_delete(bst_node_t **tree, char key) {
-  if(*tree == NULL){
+  if(*tree == NULL){                      //empty tree
     return;
   }
-  if(key < (*tree)->key){
+  if(key < (*tree)->key){                 //rekurzivní volání podle toho, kde ve stromě jsme
     bst_delete(&(*tree)->left, key);
   }
   else if(key > (*tree)->key){
@@ -145,20 +145,20 @@ void bst_delete(bst_node_t **tree, char key) {
   else{
     bst_node_t *temp;
     if((*tree)->left == NULL && (*tree)->right == NULL){    //Jediný prvek ve stromě
-      free(*tree);                                          //?!
+      free(*tree);                                          
       (*tree) = NULL;
     }
-    else if((*tree)->left == NULL && (*tree)->right != NULL){
+    else if((*tree)->left == NULL && (*tree)->right != NULL){   //nejlevější prvek podstromu
       temp = (*tree);    //Dědění
       (*tree) = (*tree)->right;
       free(temp);
     }
-    else if((*tree)->right == NULL && (*tree)->left != NULL){
+    else if((*tree)->right == NULL && (*tree)->left != NULL){   //nejpravější prvek podstromu
       temp = (*tree);
       (*tree) = (*tree)->left;
       free(temp);
     }
-    else if((*tree)->right != NULL && (*tree)->left != NULL){
+    else if((*tree)->right != NULL && (*tree)->left != NULL){   //kořen uzlu
       bst_replace_by_rightmost((*tree), &(*tree)->left);
     }
   }
@@ -178,14 +178,14 @@ void bst_dispose(bst_node_t **tree) {
   if((*tree) == NULL){
     return;
   }
-
+                                    //rekurzivní volání podle toho, kde ve stromě jsme
     if((*tree)->left != NULL){
       bst_dispose(&(*tree)->left);
     }
     if((*tree)->right != NULL){
       bst_dispose(&(*tree)->right);
     }
-
+                                    //až po úplné vyprázdnění stromu
     free(*tree);
     (*tree) = NULL;
 
@@ -205,7 +205,7 @@ void bst_preorder(bst_node_t *tree) {
   }
   if(tree != NULL){
   bst_print_node(tree);
-  bst_preorder(tree->left);
+  bst_preorder(tree->left);   //Root, Left, Right
   bst_preorder(tree->right);
   }
 }
@@ -223,7 +223,7 @@ void bst_inorder(bst_node_t *tree) {
   }
   if(tree != NULL){
   bst_inorder(tree->left);
-  bst_print_node(tree);
+  bst_print_node(tree);     //Left, Root, Right
   bst_inorder(tree->right);
   }
 }
@@ -240,6 +240,6 @@ void bst_postorder(bst_node_t *tree) {
   }
 
   bst_postorder(tree->left);
-  bst_postorder(tree->right);
+  bst_postorder(tree->right);   //Left, Right, Root
   bst_print_node(tree);
 }

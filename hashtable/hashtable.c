@@ -36,7 +36,7 @@ void ht_init(ht_table_t *table) {
       return;
   }
   
-  for(int i = 0; i < HT_SIZE; i++){
+  for(int i = 0; i < HT_SIZE; i++){   //inicializace prvků do velikosti HT_SIZE
     (*table)[i] = NULL;
   }
   return;
@@ -48,17 +48,17 @@ void ht_init(ht_table_t *table) {
  * V prípade úspechu vráti ukazovateľ na nájdený prvok; v opačnom prípade vráti
  * hodnotu NULL.
  */
-ht_item_t *ht_search(ht_table_t *table, char *key) {
+ht_item_t *ht_search(ht_table_t *table, char *key) {    
   if (table == NULL){
     return NULL;
   }
   
   ht_item_t *temp = (*table)[get_hash(key)];
-  while(temp != NULL){
-    if(temp->key == key){
+  while(temp != NULL){      
+    if(temp->key == key){     //nalezen -> vrátí klíč
       return temp;
     }
-    else{
+    else{                     //nenalezen -> hledá dál
       temp = temp->next;
     }
   }
@@ -78,13 +78,13 @@ void ht_insert(ht_table_t *table, char *key, float value) {
     return;
   }
 
-  ht_item_t *temp = ht_search(table, key);
-  if(temp != NULL){
+  ht_item_t *temp = ht_search(table, key);    
+  if(temp != NULL){       //vkládání na místo, kde již prvek je
     temp->value = value;
     return;
   }
   else{
-    temp = malloc(sizeof(ht_item_t));
+    temp = malloc(sizeof(ht_item_t));   //vkládání na nové místo
     if(temp == NULL){
       //Alokace selhala
       return;
@@ -112,7 +112,7 @@ float *ht_get(ht_table_t *table, char *key) {
 
   ht_item_t *temp = ht_search(table, key);
   if (temp != NULL){
-    return &temp->value;
+    return &temp->value;    //vrací hodnotu ukazatele na místo v tabulce
   }
   else{
     return NULL;
@@ -131,10 +131,10 @@ void ht_delete(ht_table_t *table, char *key) {
   ht_item_t *temp = (*table)[get_hash(key)];
 
   if (temp == NULL || table == NULL){
-    return;                           /*Ověření prádzné tabulky & neinicializované tabulky*/
+    return;                           //Ověření prádzné tabulky & neinicializované tabulky
   }
 
-  if(temp->key != key){               /*Prohledávací algoritmus*/
+  if(temp->key != key){               //Prohledávací algoritmus
     ht_item_t *previous;
     while(temp != NULL){
 
@@ -149,11 +149,11 @@ void ht_delete(ht_table_t *table, char *key) {
     }
   }
 
-  else{                               /*První prvek je hledaný*/
-    if(temp->next == NULL){           /*Je zároveň jediný prvek*/
+  else{                               //První prvek je hledaný
+    if(temp->next == NULL){           //Je zároveň jediný prvek
       temp = NULL;
     }
-    else{                             /*Má následníka*/
+    else{                             //Má následníka
       (*table)[get_hash(key)] = temp->next;
     }
     free(temp);
@@ -169,10 +169,10 @@ void ht_delete(ht_table_t *table, char *key) {
  */
 void ht_delete_all(ht_table_t *table) {
   if(table == NULL){
-    return;                           /*Prevence memory leaku*/
+    return;                           //Prevence memory leaku
   }
   ht_item_t *temp;
-  for(int i = 0; i < HT_SIZE; i++){
+  for(int i = 0; i < HT_SIZE; i++){   //Mazání prvků do velikosti HT_SIZE
     while((*table)[i] != NULL){
       temp = (*table)[i]->next;
       free((*table)[i]);
