@@ -68,7 +68,7 @@ TEST(test_tree_search, "Search for an item deeper in the tree (A)")
 bst_init(&test_tree);
 bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
 int result;
-if(bst_search(test_tree, 'C', &result)){
+if(bst_search(test_tree, 'X', &result) == true){
   printf("FOUND!");
 }
 bst_print_tree(test_tree);

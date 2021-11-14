@@ -42,18 +42,20 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
   }
 
   bst_node_t *temp = tree;
+
   while(temp != NULL){        //prohledávací algoritmus bst
-    if(tree->key == key){     //prvek nalezen
+    if(temp->key == key){     //prvek nalezen
       return true;
     }
+
     else{                     //hledání prvku
-      if(key < tree->key){
-        tree = tree->left;
+      if(key < temp->key){
+        temp = temp->left;
       }
       else{
-        tree = tree->right;
+        temp = temp->right;
       }
-      if(tree == NULL){
+      if(temp == NULL){
         return false;
       }
     }
@@ -77,7 +79,7 @@ void bst_insert(bst_node_t **tree, char key, int value) {
 
   if(temp == NULL){           //Vložení prvního prvku do bst
     bst_node_t *new = malloc(sizeof(bst_node_t));
-
+  
     if(new == NULL){          //Ověření chybné alokace
       return;
     }
