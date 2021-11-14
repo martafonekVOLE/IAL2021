@@ -41,15 +41,12 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
   else{
     if(tree->key == key){
       *value = tree->value;
-      printf("Vypis nalezene hodnoty: %d\n", *value);
       return true;
     }
     else if(tree->key > key){
       return bst_search(tree->left, key, value);
     }
     else if(tree->key < key){
-      printf("Vnoreni do uzlu!");
-      printf("\nHledany klic: %c\n", key);
       return bst_search(tree->right, key, value);
     }
   }

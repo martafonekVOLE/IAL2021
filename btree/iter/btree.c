@@ -265,8 +265,10 @@ void bst_dispose(bst_node_t **tree) {
   STACKDEC(bst_node_t*, ptrStack);
   void stack_ptrStack_init(stack_ptrStack_t *ptrStack);
 
-  stack_ptrStack_t *temp = malloc(sizeof(stack_ptrStack_t)); //NNEJDE
+  stack_ptrStack_t temp = tree; //NNEJDE
   //
+
+  
 
   
 
