@@ -3,9 +3,9 @@ První projekt IAL 2021 - tasks C202, C204, C206
 
 ##Update 30. 11. 2021##
 
-První projekt # 10/10
+První projekt: 10/10
 
-Druhý projekt # 9,3/10
+Druhý projekt: 9,3/10
   Chybějící funkce delete
 
 # C202
