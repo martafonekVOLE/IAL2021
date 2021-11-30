@@ -14,3 +14,7 @@ Druhý projekt: 9,3/10
 Cílem úlohy C204 je implementovat převod z infixového do postfixového zápisu, s využitím stacku z úlohy C202
 # C206
 Úkolem je vytvořit obousměrně vázaný seznam s řadou funkcí
+# Btree
+Úkolem je vytvořit rekurzivní a iterativní strom
+# Hashtable
+Úkolem je vytvořit hashovací tabulku
